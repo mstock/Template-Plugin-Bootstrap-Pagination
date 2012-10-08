@@ -11,6 +11,97 @@ use MRO::Compat;
 use HTML::Entities;
 use Scalar::Util qw(blessed);
 
+=head1 SYNOPSIS
+
+	use Template;
+	use Data::Page;
+
+	my $template_string = <<"EOTEMPLATE";
+	[%- USE Bootstrap.Pagination -%]
+	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri) -%]
+	EOTEMPLATE
+
+	my $template = Template->new(STRICT => 1);
+	my $output;
+	my $result = $template->process(\$template_string, {
+		pager => Data::Page->new(42, 10, 2),
+		uri   => 'http://www.example.com/blog/__PAGE__.html'
+	}, \$output) or die $template->error();
+
+=head1 DESCRIPTION
+
+Template::Plugin::Bootstrap::Pagination is a plugin for
+L<Template::Toolkit|Template::Toolkit> which produces HTML compatible to the
+Bootstrap framework's pagination component.
+
+=head1 METHODS
+
+=head2 new
+
+Constructor, creates a new instance of the plugin.
+
+=head3 Parameters
+
+This method expects its parameters as one positional parameter and an optional
+hash reference. The values passed in the hash reference will be used as default
+values, and can be overridden when calling the plugin's methods.
+
+=over
+
+=item context
+
+A reference to the L<Template::Context|Template::Context> which is loading the
+plugin. This is the positional parameter.
+
+=item uri
+
+Template for the URI to use in links. Any occurrence of C<__PAGE__> in the URI
+will be replaced by the page number it should point to. Please note that the URI
+will be entity encoded before adding it to the generated HTML.
+
+=item pager
+
+The L<Data::Page|Data::Page> object the pager should be built with.
+
+=item prev_text
+
+Text to use in the link to the previous page. Defaults to C<&laquo;>.
+
+=item next_text
+
+Text to use in the link to the previous page. Defaults to C<&raquo;>.
+
+=item centered
+
+If the pager should be centered. Defaults to C<0>, i.e. C<false>.
+
+=item right
+
+If the pager should be right aligned. Defaults to C<0>, i.e. C<false>.
+
+=item siblings
+
+Number of links to display to the left and the right of the current page.
+Defaults to C<3>.
+
+=item offset
+
+Offset to add to the page number. May be negative, which can be useful if the
+application's first page is C<0>, not C<1>. Defaults to C<0>.
+
+=item factor
+
+Factor to multiply the page number with. Can be useful if the application does
+not use pages, but offsets from eg. C<0> (in that case, the factor will usually
+be the page size). Defaults to C<1>.
+
+=back
+
+=head3 Result
+
+The new instance.
+
+=cut
 
 sub new {
 	my ($class, $context, $arg_ref) = @_;
@@ -35,6 +126,25 @@ sub new {
 	return $self;
 }
 
+
+=head2 pagination
+
+Get HTML for a pagination. Includes a previous/next link, links to first and
+last page, and links to a range of pages around the current page:
+
+	< | 1 | ... | 8 | 9 | _10_ | 11 | 12 | ... | n | >
+
+=head3 Parameters
+
+This method expects positional parameters. See L<"new"> for the available
+parameters, their description and their defaults. C<pager> and C<uri> are
+required if they have not been passed as defaults.
+
+=head3 Result
+
+The HTML code.
+
+=cut
 
 sub pagination {
 	my ($self, $arg_ref) = @_;
@@ -118,3 +228,19 @@ sub _uri_for_page {
 
 
 1;
+
+=head1 SEE ALSO
+
+=over
+
+=item *
+
+L<http://twitter.github.com/bootstrap/> - The bootstrap framework
+
+=item *
+
+L<Template::Toolkit|Template::Toolkit>
+
+=back
+
+=cut
