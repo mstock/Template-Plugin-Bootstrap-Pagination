@@ -109,7 +109,7 @@ sub _uri_for_page {
 	my ($self, $page, $arg_ref) = @_;
 
 	my $uri = $arg_ref->{uri};
-	unless (defined $uri && $uri ne '') {
+	if (! defined $uri || $uri eq '') {
 		croak("Required 'uri' parameter not passed");
 	}
 	$uri =~ s/__PAGE__/( $page + $arg_ref->{offset} ) * $arg_ref->{factor}/eg;
