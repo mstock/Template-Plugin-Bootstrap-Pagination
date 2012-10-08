@@ -25,7 +25,7 @@ sub in_template_test : Test(1) {
 	}, \$output) or die $template->error();
 
 	my $expected = $self->compress_expected(<<EOEXPECTED
-<div class="pagination pagination-centered">
+<div class="pagination">
 	<ul>
 		<li><a href="http://www.example.com/blog/1.html">&laquo;</a></li>
 		<li><a href="http://www.example.com/blog/1.html">1</a></li>

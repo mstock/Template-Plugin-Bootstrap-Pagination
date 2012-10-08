@@ -24,7 +24,7 @@ sub new {
 	$self->{default} = {
 		prev_text => '&laquo;',
 		next_text => '&raquo;',
-		centered  => 1,
+		centered  => 0,
 		right     => 0,
 		siblings  => 3,
 		offset    => 0,
