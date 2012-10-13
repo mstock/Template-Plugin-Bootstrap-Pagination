@@ -205,6 +205,55 @@ sub pagination {
 }
 
 
+sub pager {
+	my ($self, $arg_ref) = @_;
+
+	$arg_ref = {
+		%{$self->{default}},
+		%{$arg_ref || {}},
+	};
+
+	my $pager = $arg_ref->{pager};
+	unless (blessed $pager && $pager->isa('Data::Page')) {
+		croak("Required 'pager' parameter not passed or not a 'Data::Page' instance");
+	}
+
+	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
+	my $prev_page = $self->_pager_item(
+		$prev_uri, $arg_ref->{prev_text}, $arg_ref->{align} ? 'previous' : ()
+	);
+	my $next_page = $self->_pager_item(
+		$next_uri, $arg_ref->{next_text}, $arg_ref->{align} ? 'next' : ()
+	);
+
+	return '<ul class="pager">'
+		. $prev_page
+		. $next_page
+	. '</ul>';
+}
+
+
+sub _pager_item {
+	my ($self, $uri, $text, @item_classes) = @_;
+
+	my $content;
+	if (defined $uri) {
+		$content = '<a href="'.$uri.'">'.$text.'</a>';
+	}
+	else {
+		push @item_classes, 'disabled';
+		$content = '<span>'.$text.'</span>';
+	}
+
+	my $item = '<li';
+	if (scalar @item_classes) {
+		$item .= ' class="'.join(' ', @item_classes).'"';
+	}
+
+	return $item.'>'.$content.'</li>';
+}
+
+
 sub _prev_next_uri {
 	my ($self, $arg_ref) = @_;
 
