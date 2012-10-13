@@ -179,14 +179,6 @@ sub pagination {
 		croak("Required 'pager' parameter not passed or not a 'Data::Page' instance");
 	}
 
-	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
-	my $prev_page = $prev_uri
-		? '<li><a href="'.$prev_uri.'">'.$arg_ref->{prev_text}.'</a></li>'
-		: '<li class="disabled"><span>'.$arg_ref->{prev_text}.'</span></li>';
-	my $next_page = $next_uri
-		? '<li><a href="'.$next_uri.'">'.$arg_ref->{next_text}.'</a></li>'
-		: '<li class="disabled"><span>'.$arg_ref->{next_text}.'</span></li>';
-
 	my $pagination = '';
 	if ($pager->total_entries() > $pager->entries_per_page()) {
 		for my $page ($pager->first_page() .. $pager->last_page()) {
@@ -215,11 +207,12 @@ sub pagination {
 	my $alignment = $arg_ref->{centered}
 		? ' pagination-centered'
 		: ($arg_ref->{right} ? ' pagination-right' : '');
+	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
 	return '<div class="pagination'.$alignment.'">'
 		. '<ul>'
-			. $prev_page
+			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
 			. $pagination
-			. $next_page
+			. $self->_pager_item($next_uri, $arg_ref->{next_text})
 		. '</ul>'
 	. '</div>';
 }
