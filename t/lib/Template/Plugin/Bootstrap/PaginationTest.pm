@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Exception;
 use Template;
 use Template::Plugin::Bootstrap::Pagination;
 use Data::Page;
@@ -221,6 +222,31 @@ sub uri_for_page_test : Test(6) {
 		});
 		is($prev, $case->[3], 'prev uri ok');
 	}
+}
+
+
+sub exceptions_test : Test(4) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new();
+
+	throws_ok(sub {
+		$plugin->pager(),
+	}, qr{Required 'pager' parameter not passed or not a 'Data::Page' instance}, 'pager required');
+	throws_ok(sub {
+		$plugin->pagination(),
+	}, qr{Required 'pager' parameter not passed or not a 'Data::Page' instance}, 'pager required');
+
+	throws_ok(sub {
+		$plugin->pager({
+			pager => Data::Page->new(42, 10, 1),
+		}),
+	}, qr{Required 'uri' parameter not passed}, 'pager required');
+	throws_ok(sub {
+		$plugin->pagination({
+			pager => Data::Page->new(42, 10, 1),
+		}),
+	}, qr{Required 'uri' parameter not passed}, 'pager required');
 }
 
 
