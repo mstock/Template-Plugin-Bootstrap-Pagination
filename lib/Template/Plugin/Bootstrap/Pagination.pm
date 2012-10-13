@@ -84,6 +84,22 @@ Text to use in the link to the previous page. Defaults to C<&laquo;>.
 
 Text to use in the link to the previous page. Defaults to C<&raquo;>.
 
+=item offset
+
+Offset to add to the page number. May be negative, which can be useful if the
+application's first page is C<0>, not C<1>. Defaults to C<0>.
+
+=item factor
+
+Factor to multiply the page number with. Can be useful if the application does
+not use pages, but offsets from eg. C<0> (in that case, the factor will usually
+be the page size). Defaults to C<1>.
+
+=item siblings
+
+Number of links to display to the left and the right of the current page.
+Defaults to C<3>. Only used in L<"pagination">.
+
 =item centered
 
 If the pager should be centered. Defaults to C<0>, i.e. C<false>. Only used in
@@ -98,22 +114,6 @@ in L<"pagination">.
 
 Don't center previous and next links, align them to the sides instead. Defaults
 to C<0>, i.e. C<false>, so the links will be centered. Only used in L<"pager">.
-
-=item siblings
-
-Number of links to display to the left and the right of the current page.
-Defaults to C<3>. Only used in L<"pagination">.
-
-=item offset
-
-Offset to add to the page number. May be negative, which can be useful if the
-application's first page is C<0>, not C<1>. Defaults to C<0>.
-
-=item factor
-
-Factor to multiply the page number with. Can be useful if the application does
-not use pages, but offsets from eg. C<0> (in that case, the factor will usually
-be the page size). Defaults to C<1>.
 
 =back
 
