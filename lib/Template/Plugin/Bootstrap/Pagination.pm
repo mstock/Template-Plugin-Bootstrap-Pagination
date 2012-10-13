@@ -10,6 +10,7 @@ use Carp;
 use MRO::Compat;
 use HTML::Entities;
 use Scalar::Util qw(blessed);
+use Template::Exception;
 
 =head1 SYNOPSIS
 
@@ -129,7 +130,7 @@ sub new {
 	my $self = $class->next::method($context, $arg_ref);
 
 	if (defined $arg_ref && ref $arg_ref ne 'HASH') {
-		croak('Hash reference required');
+		$self->_throw('Hash reference required');
 	}
 	$arg_ref ||= {};
 	$self->{default} = {
@@ -176,7 +177,7 @@ sub pagination {
 
 	my $pager = $arg_ref->{pager};
 	unless (blessed $pager && $pager->isa('Data::Page')) {
-		croak("Required 'pager' parameter not passed or not a 'Data::Page' instance");
+		$self->_throw("Required 'pager' parameter not passed or not a 'Data::Page' instance");
 	}
 
 	my $pagination = '';
@@ -244,7 +245,7 @@ sub pager {
 
 	my $pager = $arg_ref->{pager};
 	unless (blessed $pager && $pager->isa('Data::Page')) {
-		croak("Required 'pager' parameter not passed or not a 'Data::Page' instance");
+		$self->_throw("Required 'pager' parameter not passed or not a 'Data::Page' instance");
 	}
 
 	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
@@ -298,10 +299,16 @@ sub _uri_for_page {
 
 	my $uri = $arg_ref->{uri};
 	if (! defined $uri || $uri eq '') {
-		croak("Required 'uri' parameter not passed");
+		$self->_throw("Required 'uri' parameter not passed");
 	}
 	$uri =~ s/__PAGE__/( $page + $arg_ref->{offset} ) * $arg_ref->{factor}/eg;
 	return encode_entities($uri);
+}
+
+
+sub _throw {
+	my ($self, $error) = @_;
+	croak(Template::Exception->new('Bootstrap.Pagination', $error));
 }
 
 
