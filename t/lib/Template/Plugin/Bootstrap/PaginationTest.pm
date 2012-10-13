@@ -47,6 +47,62 @@ EOEXPECTED
 }
 
 
+sub pagination_test : Test(3) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new(undef, {
+		pager => Data::Page->new(12, 10, 2),
+		uri   => 'http://www.example.com/blog/__PAGE__.html',
+		prev_text => 'Previous',
+		next_text => 'Next',
+	});
+
+	# Basic case
+	my $expected = $self->compress_expected(<<EOEXPECTED
+<div class="pagination">
+	<ul>
+		<li><a href="http://www.example.com/blog/1.html">Previous</a></li>
+		<li><a href="http://www.example.com/blog/1.html">1</a></li>
+		<li class="active"><span>2</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination(), $expected, 'output ok');
+
+	# Center pagination
+	$expected = $self->compress_expected(<<EOEXPECTED
+<div class="pagination pagination-centered">
+	<ul>
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager    => Data::Page->new(2, 10, 2),
+		centered => 1,
+	}), $expected, 'output ok');
+
+	# Right align pagination
+	$expected = $self->compress_expected(<<EOEXPECTED
+<div class="pagination pagination-right">
+	<ul>
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager => Data::Page->new(2, 10, 2),
+		right => 1,
+	}), $expected, 'output ok');
+}
+
+
 sub pager_in_template_test : Test(1) {
 	my ($self) = @_;
 
@@ -65,6 +121,39 @@ sub pager_in_template_test : Test(1) {
 EOEXPECTED
 	);
 	is($output, $expected, 'output ok');
+}
+
+
+sub pager_test : Test(2) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new(undef, {
+		align => 1,
+		pager => Data::Page->new(42, 10, 2),
+		uri   => 'http://www.example.com/blog/__PAGE__.html',
+		prev_text => 'Previous',
+		next_text => 'Next',
+	});
+	my $expected = $self->compress_expected(<<EOEXPECTED
+<ul class="pager">
+	<li class="previous"><a href="http://www.example.com/blog/1.html">Previous</a></li>
+	<li class="next"><a href="http://www.example.com/blog/3.html">Next</a></li>
+</ul>
+EOEXPECTED
+	);
+	is($plugin->pager(), $expected, 'output ok');
+
+	$expected = $self->compress_expected(<<EOEXPECTED
+<ul class="pager">
+	<li class="previous"><a href="http://www.example.com/blog/1.html">foo</a></li>
+	<li class="next"><a href="http://www.example.com/blog/3.html">bar</a></li>
+</ul>
+EOEXPECTED
+	);
+	is($plugin->pager({
+		prev_text => 'foo',
+		next_text => 'bar',
+	}), $expected, 'output ok');
 }
 
 
