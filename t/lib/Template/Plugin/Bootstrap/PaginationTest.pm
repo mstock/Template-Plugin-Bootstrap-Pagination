@@ -68,6 +68,73 @@ EOEXPECTED
 }
 
 
+sub pager_item_test : Test(4) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new();
+
+	my $item = $plugin->_pager_item('/1.html', 'foo');
+	is($item, '<li><a href="/1.html">foo</a></li>');
+
+	$item = $plugin->_pager_item('/1.html', 'foo', 'previous');
+	is($item, '<li class="previous"><a href="/1.html">foo</a></li>');
+
+	$item = $plugin->_pager_item('/1.html', 'foo', 'previous', 'bar');
+	is($item, '<li class="previous bar"><a href="/1.html">foo</a></li>');
+
+	$item = $plugin->_pager_item(undef, 'foo', 'previous');
+	is($item, '<li class="previous disabled"><span>foo</span></li>');
+}
+
+
+sub prev_next_uri_test : Test(8) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new();
+	my @cases = (
+		[Data::Page->new(42, 10, 2), 'http://www.example.com/blog/1.html', 'http://www.example.com/blog/3.html'],
+		[Data::Page->new(42, 10, 1), undef, 'http://www.example.com/blog/2.html'],
+		[Data::Page->new(42, 10, 5), 'http://www.example.com/blog/4.html', undef],
+		[Data::Page->new(1, 10, 1), undef, undef],
+	);
+
+	for my $case (@cases) {
+		my ($prev, $next) = $plugin->_prev_next_uri({
+			factor => 1,
+			offset => 0,
+			pager  => $case->[0],
+			uri    => 'http://www.example.com/blog/__PAGE__.html',
+		});
+		is($prev, $case->[1], 'prev uri ok');
+		is($next, $case->[2], 'next uri ok');
+	}
+}
+
+
+sub uri_for_page_test : Test(6) {
+	my ($self) = @_;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new();
+	my @cases = (
+		[1, 1, 0, 'http://www.example.com/blog/1.html'],
+		[2, 1, 0, 'http://www.example.com/blog/2.html'],
+		[1, 1, -1, 'http://www.example.com/blog/0.html'],
+		[2, 1, -1, 'http://www.example.com/blog/1.html'],
+		[1, 10, -1, 'http://www.example.com/blog/0.html'],
+		[2, 10, -1, 'http://www.example.com/blog/10.html'],
+	);
+
+	for my $case (@cases) {
+		my ($prev, $next) = $plugin->_uri_for_page($case->[0], {
+			factor => $case->[1],
+			offset => $case->[2],
+			uri    => 'http://www.example.com/blog/__PAGE__.html',
+		});
+		is($prev, $case->[3], 'prev uri ok');
+	}
+}
+
+
 sub compress_expected {
 	my ($self, $expected) = @_;
 	$expected =~ s{(?:\n|^\s*)}{}gxms;
