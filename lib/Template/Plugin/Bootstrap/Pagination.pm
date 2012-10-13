@@ -16,16 +16,29 @@ use Scalar::Util qw(blessed);
 	use Template;
 	use Data::Page;
 
-	my $template_string = <<"EOTEMPLATE";
+	my $pagination_template_string = <<"EOTEMPLATE";
 	[%- USE Bootstrap.Pagination -%]
 	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri) -%]
 	EOTEMPLATE
 
+	my $pager_template_string = <<"EOTEMPLATE";
+	[%- USE Bootstrap.Pagination -%]
+	[%- Bootstrap.Pagination.pager(pager = pager, uri = uri) -%]
+	EOTEMPLATE
+
+	my $pager = Data::Page->new(42, 10, 2);
+	my $uri = 'http://www.example.com/blog/__PAGE__.html';
 	my $template = Template->new(STRICT => 1);
 	my $output;
-	my $result = $template->process(\$template_string, {
-		pager => Data::Page->new(42, 10, 2),
-		uri   => 'http://www.example.com/blog/__PAGE__.html'
+
+	my $pagination_result = $template->process(\$pagination_template_string, {
+		pager => $pager,
+		uri   => $uri,
+	}, \$output) or die $template->error();
+
+	my $pager_result = $template->process(\$pager_template_string, {
+		pager => $pager,
+		uri   => $uri,
 	}, \$output) or die $template->error();
 
 =head1 DESCRIPTION
@@ -73,16 +86,23 @@ Text to use in the link to the previous page. Defaults to C<&raquo;>.
 
 =item centered
 
-If the pager should be centered. Defaults to C<0>, i.e. C<false>.
+If the pager should be centered. Defaults to C<0>, i.e. C<false>. Only used in
+L<"pagination">.
 
 =item right
 
-If the pager should be right aligned. Defaults to C<0>, i.e. C<false>.
+If the pager should be right aligned. Defaults to C<0>, i.e. C<false>. Only used
+in L<"pagination">.
+
+=item align
+
+Don't center previous and next links, align them to the sides instead. Defaults
+to C<0>, i.e. C<false>, so the links will be centered. Only used in L<"pager">.
 
 =item siblings
 
 Number of links to display to the left and the right of the current page.
-Defaults to C<3>.
+Defaults to C<3>. Only used in L<"pagination">.
 
 =item offset
 
@@ -204,6 +224,22 @@ sub pagination {
 	. '</div>';
 }
 
+
+=head2 pager
+
+Get HTML for a simple pager with only previous and next links.
+
+=head3 Parameters
+
+This method expects positional parameters. See L<"new"> for the available
+parameters, their description and their defaults. C<pager> and C<uri> are
+required if they have not been passed as defaults.
+
+=head3 Result
+
+The HTML code.
+
+=cut
 
 sub pager {
 	my ($self, $arg_ref) = @_;
