@@ -83,7 +83,7 @@ Text to use in the link to the previous page. Defaults to C<&laquo;>.
 
 =item next_text
 
-Text to use in the link to the previous page. Defaults to C<&raquo;>.
+Text to use in the link to the next page. Defaults to C<&raquo;>.
 
 =item offset
 
@@ -159,7 +159,7 @@ last page, and links to a range of pages around the current page:
 
 This method expects positional parameters. See L<"new"> for the available
 parameters, their description and their defaults. C<pager> and C<uri> are
-required if they have not been passed as defaults.
+required if they have not been passed to L<"new"> as defaults.
 
 =head3 Result
 
@@ -227,7 +227,7 @@ Get HTML for a simple pager with only previous and next links.
 
 This method expects positional parameters. See L<"new"> for the available
 parameters, their description and their defaults. C<pager> and C<uri> are
-required if they have not been passed as defaults.
+required if they have not been passed to L<"new"> as defaults.
 
 =head3 Result
 
