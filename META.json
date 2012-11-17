@@ -48,9 +48,8 @@
             "File::Find" : "0",
             "File::Temp" : "0",
             "Template" : "0",
-            "Test::Class" : "0",
             "Test::Exception" : "0",
-            "Test::More" : "0"
+            "Test::More" : "0.94"
          }
       }
    },
@@ -62,6 +61,6 @@
          "web" : "https://github.com/mstock/Template-Plugin-Bootstrap-Pagination"
       }
    },
-   "version" : "0.001000"
+   "version" : "0.001001"
 }
 

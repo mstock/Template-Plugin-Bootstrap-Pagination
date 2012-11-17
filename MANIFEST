@@ -10,7 +10,6 @@ perlcritic.rc
 t/00-compile.t
 t/author-critic.t
 t/author-test-eol.t
-t/lib/Template/Plugin/Bootstrap/PaginationTest.pm
 t/release-cpan-changes.t
 t/release-distmeta.t
 t/release-pod-coverage.t

@@ -1,5 +1,9 @@
 Revision history for Template-Plugin-Bootstrap-Pagination
 
+0.001001  2012-11-17 13:39:05 Europe/Zurich
+
+ - Change tests to not depend on Test::Class anymore (RT #81193)
+
 0.001000  2012-10-23 21:28:42 Europe/Zurich
 
  - Initial release

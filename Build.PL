@@ -12,9 +12,8 @@ my %module_build_args = (
     "File::Temp" => 0,
     "Module::Build" => "0.3601",
     "Template" => 0,
-    "Test::Class" => 0,
     "Test::Exception" => 0,
-    "Test::More" => 0
+    "Test::More" => "0.94"
   },
   "configure_requires" => {
     "Module::Build" => "0.3601"
@@ -24,7 +23,7 @@ my %module_build_args = (
     "Manfred Stock <mstock\@cpan.org>"
   ],
   "dist_name" => "Template-Plugin-Bootstrap-Pagination",
-  "dist_version" => "0.001000",
+  "dist_version" => "0.001001",
   "license" => "perl",
   "module_name" => "Template::Plugin::Bootstrap::Pagination",
   "recommends" => {},

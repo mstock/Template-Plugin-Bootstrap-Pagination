@@ -1,6 +1,6 @@
 package Template::Plugin::Bootstrap::Pagination;
 {
-  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.001000';
+  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.001001';
 }
 use parent qw(Template::Plugin);
 
@@ -183,7 +183,7 @@ Template::Plugin::Bootstrap::Pagination - Produce HTML suitable for the Bootstra
 
 =head1 VERSION
 
-version 0.001000
+version 0.001001
 
 =head1 SYNOPSIS
 

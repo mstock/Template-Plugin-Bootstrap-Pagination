@@ -8,9 +8,8 @@ build_requires:
   File::Temp: 0
   Module::Build: 0.3601
   Template: 0
-  Test::Class: 0
   Test::Exception: 0
-  Test::More: 0
+  Test::More: 0.94
 configure_requires:
   Module::Build: 0.3601
 dynamic_config: 0
@@ -35,4 +34,4 @@ requires:
   warnings: 0
 resources:
   repository: git://github.com/mstock/Template-Plugin-Bootstrap-Pagination.git
-version: 0.001000
+version: 0.001001
