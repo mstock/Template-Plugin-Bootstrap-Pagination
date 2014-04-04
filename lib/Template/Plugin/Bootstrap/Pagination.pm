@@ -182,21 +182,24 @@ sub pagination {
 
 	my $pagination = '';
 	if ($pager->total_entries() > $pager->entries_per_page()) {
-		for my $page ($pager->first_page() .. $pager->last_page()) {
-			if ($pager->current_page == $page) {
+		my $current_page = $pager->current_page();
+		my $first_page   = $pager->first_page();
+		my $last_page    = $pager->last_page();
+		for my $page ($first_page .. $last_page) {
+			if ($current_page == $page) {
 				$pagination .= '<li class="active">'
 					. '<span>'.$page.'</span>'
 				. '</li>';
 			}
 			else {
-				if ($page == $pager->first_page() || $page == $pager->last_page()
-						|| abs($page - $pager->current_page()) <= ($arg_ref->{siblings})
-							|| $pager->last_page() <= (2 * $arg_ref->{siblings} + 1)) {
+				if ($page == $first_page || $page == $last_page
+						|| abs($page - $current_page) <= ($arg_ref->{siblings})
+							|| $last_page <= (2 * $arg_ref->{siblings} + 1)) {
 					$pagination .= '<li>'
 						. '<a href="'.$self->_uri_for_page($page, $arg_ref).'">'.$page.'</a>'
 					. '</li>';
 				}
-				elsif ($pager->first_page() + 1 == $page || $pager->last_page() - 1 == $page) {
+				elsif ($first_page + 1 == $page || $last_page - 1 == $page) {
 					$pagination .= '<li class="disabled">'
 						. '<span>&hellip;</span>'
 					. '</li>';
