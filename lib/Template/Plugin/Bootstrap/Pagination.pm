@@ -185,7 +185,8 @@ sub pagination {
 		my $current_page = $pager->current_page();
 		my $first_page   = $pager->first_page();
 		my $last_page    = $pager->last_page();
-		for my $page ($first_page .. $last_page) {
+		my $page = $first_page;
+		PAGE: while ($page <= $last_page) {
 			if ($current_page == $page) {
 				$pagination .= '<li class="active">'
 					. '<span>'.$page.'</span>'
@@ -204,7 +205,14 @@ sub pagination {
 						. '<span>&hellip;</span>'
 					. '</li>';
 				}
+				else {
+					$page = ($page < $current_page)
+						? $current_page - $arg_ref->{siblings}
+						: $last_page - 1;
+					next PAGE;
+				}
 			}
+			$page++;
 		}
 	}
 
