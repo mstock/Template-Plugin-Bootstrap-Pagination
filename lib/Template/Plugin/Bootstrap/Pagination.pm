@@ -1,6 +1,6 @@
 package Template::Plugin::Bootstrap::Pagination;
 {
-  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.001001';
+  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.001002';
 }
 use parent qw(Template::Plugin);
 
@@ -56,26 +56,37 @@ sub pagination {
 
 	my $pagination = '';
 	if ($pager->total_entries() > $pager->entries_per_page()) {
-		for my $page ($pager->first_page() .. $pager->last_page()) {
-			if ($pager->current_page == $page) {
+		my $current_page = $pager->current_page();
+		my $first_page   = $pager->first_page();
+		my $last_page    = $pager->last_page();
+		my $page = $first_page;
+		PAGE: while ($page <= $last_page) {
+			if ($current_page == $page) {
 				$pagination .= '<li class="active">'
 					. '<span>'.$page.'</span>'
 				. '</li>';
 			}
 			else {
-				if ($page == $pager->first_page() || $page == $pager->last_page()
-						|| abs($page - $pager->current_page()) <= ($arg_ref->{siblings})
-							|| $pager->last_page() <= (2 * $arg_ref->{siblings} + 1)) {
+				if ($page == $first_page || $page == $last_page
+						|| abs($page - $current_page) <= ($arg_ref->{siblings})
+							|| $last_page <= (2 * $arg_ref->{siblings} + 1)) {
 					$pagination .= '<li>'
 						. '<a href="'.$self->_uri_for_page($page, $arg_ref).'">'.$page.'</a>'
 					. '</li>';
 				}
-				elsif ($pager->first_page() + 1 == $page || $pager->last_page() - 1 == $page) {
+				elsif ($first_page + 1 == $page || $last_page - 1 == $page) {
 					$pagination .= '<li class="disabled">'
 						. '<span>&hellip;</span>'
 					. '</li>';
 				}
+				else {
+					$page = ($page < $current_page)
+						? $current_page - $arg_ref->{siblings}
+						: $last_page - 1;
+					next PAGE;
+				}
 			}
+			$page++;
 		}
 	}
 
@@ -183,7 +194,7 @@ Template::Plugin::Bootstrap::Pagination - Produce HTML suitable for the Bootstra
 
 =head1 VERSION
 
-version 0.001001
+version 0.001002
 
 =head1 SYNOPSIS
 
@@ -346,7 +357,7 @@ Manfred Stock <mstock@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Manfred Stock.
+This software is copyright (c) 2014 by Manfred Stock.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

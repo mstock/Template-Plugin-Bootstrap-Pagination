@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 0.94 tests => 8;
+use Test::More 0.94 tests => 9;
 use Test::Exception;
 use Template;
 use Template::Plugin::Bootstrap::Pagination;
@@ -98,6 +98,38 @@ EOEXPECTED
 		pager => Data::Page->new(2, 10, 2),
 		right => 1,
 	}), $expected, 'output ok');
+};
+
+
+subtest 'pagination() with many pages test' => sub {
+	plan tests => 1;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new(undef, {
+		pager => Data::Page->new(10000, 10, 500),
+		uri   => 'http://www.example.com/blog/__PAGE__.html',
+		prev_text => 'Previous',
+		next_text => 'Next',
+		siblings  => 1,
+	});
+
+	# Basic case
+	my $expected = compress_expected(<<EOEXPECTED
+<div class="pagination">
+	<ul>
+		<li><a href="http://www.example.com/blog/499.html">Previous</a></li>
+		<li><a href="http://www.example.com/blog/1.html">1</a></li>
+		<li class="disabled"><span>&hellip;</span></li>
+		<li><a href="http://www.example.com/blog/499.html">499</a></li>
+		<li class="active"><span>500</span></li>
+		<li><a href="http://www.example.com/blog/501.html">501</a></li>
+		<li class="disabled"><span>&hellip;</span></li>
+		<li><a href="http://www.example.com/blog/1000.html">1000</a></li>
+		<li><a href="http://www.example.com/blog/501.html">Next</a></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination(), $expected, 'output ok');
 };
 
 

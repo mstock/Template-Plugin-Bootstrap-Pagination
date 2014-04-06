@@ -1,5 +1,9 @@
 Revision history for Template-Plugin-Bootstrap-Pagination
 
+0.001002  2014-04-06 15:19:50 Europe/Zurich
+
+ - Improve performance of pagination()-method in situations with many pages
+
 0.001001  2012-11-17 13:39:05 Europe/Zurich
 
  - Change tests to not depend on Test::Class anymore (RT #81193)

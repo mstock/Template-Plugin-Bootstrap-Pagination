@@ -23,7 +23,7 @@ my %module_build_args = (
     "Manfred Stock <mstock\@cpan.org>"
   ],
   "dist_name" => "Template-Plugin-Bootstrap-Pagination",
-  "dist_version" => "0.001001",
+  "dist_version" => "0.001002",
   "license" => "perl",
   "module_name" => "Template::Plugin::Bootstrap::Pagination",
   "recommends" => {},
