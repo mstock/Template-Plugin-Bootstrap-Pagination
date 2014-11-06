@@ -19,12 +19,12 @@ use Template::Exception;
 
 	my $pagination_template_string = <<"EOTEMPLATE";
 	[%- USE Bootstrap.Pagination -%]
-	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri) -%]
+	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri, version = 2) -%]
 	EOTEMPLATE
 
 	my $pager_template_string = <<"EOTEMPLATE";
 	[%- USE Bootstrap.Pagination -%]
-	[%- Bootstrap.Pagination.pager(pager = pager, uri = uri) -%]
+	[%- Bootstrap.Pagination.pager(pager = pager, uri = uri, version = 3) -%]
 	EOTEMPLATE
 
 	my $pager = Data::Page->new(42, 10, 2);
@@ -66,6 +66,12 @@ values, and can be overridden when calling the plugin's methods.
 
 A reference to the L<Template::Context|Template::Context> which is loading the
 plugin. This is the positional parameter.
+
+=item version
+
+Bootstrap version the HTML code should be generated for. Defaults to C<2> for
+now, currently supported are the major versions C<2> and C<3> (although I have
+not tested many minor releases, so maybe this is not entirely correct).
 
 =item uri
 
@@ -141,6 +147,7 @@ sub new {
 		siblings  => 3,
 		offset    => 0,
 		factor    => 1,
+		version   => 2,
 		%{$arg_ref},
 	};
 
@@ -216,12 +223,41 @@ sub pagination {
 		}
 	}
 
+	my $version = $arg_ref->{version} || 2;
+	if ($version eq '2') {
+		return $self->_pagination_2($pagination, $arg_ref);
+	} elsif ($version eq '3') {
+		return $self->_pagination_3($pagination, $arg_ref);
+	} else {
+		croak('Bootstrap version ' . $version . ' not (yet) supported');
+	}
+}
+
+sub _pagination_2 {
+	my ($self, $pagination, $arg_ref) = @_;
+
 	my $alignment = $arg_ref->{centered}
 		? ' pagination-centered'
 		: ($arg_ref->{right} ? ' pagination-right' : '');
 	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
 	return '<div class="pagination'.$alignment.'">'
 		. '<ul>'
+			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
+			. $pagination
+			. $self->_pager_item($next_uri, $arg_ref->{next_text})
+		. '</ul>'
+	. '</div>';
+}
+
+sub _pagination_3 {
+	my ($self, $pagination, $arg_ref) = @_;
+
+	my $alignment = $arg_ref->{centered}
+		? 'text-center'
+		: ($arg_ref->{right} ? 'text-right' : 'text-left');
+	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
+	return '<div class="'.$alignment.'">'
+		. '<ul class="pagination">'
 			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
 			. $pagination
 			. $self->_pager_item($next_uri, $arg_ref->{next_text})
