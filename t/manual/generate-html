@@ -26,6 +26,10 @@ my $template_string = <<"EOTEMPLATE";
 			[%- Bootstrap.Pagination.pagination(version = major, pager = pager, uri = uri, centered => 1) -%]
 			[%- Bootstrap.Pagination.pagination(version = major, pager = pager, uri = uri, right => 1) -%]
 
+			[%- Bootstrap.Pagination.pagination(version = major, pager = pager, uri = uri, centered => 1, size = 'large') -%]
+			[%- Bootstrap.Pagination.pagination(version = major, pager = pager, uri = uri, centered => 1, size = 'small') -%]
+			[%- Bootstrap.Pagination.pagination(version = major, pager = pager, uri = uri, centered => 1, size = 'mini') -%]
+
 			[%- Bootstrap.Pagination.pager(version = major, pager = pager, uri = uri) -%]
 			[%- Bootstrap.Pagination.pager(version = major, pager = pager, uri = uri, align = 1) -%]
 		</div>

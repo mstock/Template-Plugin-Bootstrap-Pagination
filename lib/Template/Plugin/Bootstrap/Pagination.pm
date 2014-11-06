@@ -107,6 +107,12 @@ be the page size). Defaults to C<1>.
 Number of links to display to the left and the right of the current page.
 Defaults to C<3>. Only used in L<"pagination">.
 
+=item size
+
+Size of the pagination component. Newer versions (starting at around 2.2.0)
+support sizing of the pager. Supports C<large>, C<small> and C<mini> (C<mini>
+only in Bootstrap before 3.0.0).
+
 =item centered
 
 If the pager should be centered. Defaults to C<0>, i.e. C<false>. Only used in
@@ -239,8 +245,9 @@ sub _pagination_2 {
 	my $alignment = $arg_ref->{centered}
 		? ' pagination-centered'
 		: ($arg_ref->{right} ? ' pagination-right' : '');
+	my $size = defined $arg_ref->{size} ? ' pagination-'.$arg_ref->{size} : '';
 	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
-	return '<div class="pagination'.$alignment.'">'
+	return '<div class="pagination'.$alignment.$size.'">'
 		. '<ul>'
 			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
 			. $pagination
@@ -255,9 +262,13 @@ sub _pagination_3 {
 	my $alignment = $arg_ref->{centered}
 		? 'text-center'
 		: ($arg_ref->{right} ? 'text-right' : 'text-left');
+	my $size = defined $arg_ref->{size} ? ({
+		'small' => ' pagination-sm',
+		'large' => ' pagination-lg',
+	}->{$arg_ref->{size}} || '') : '';
 	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
 	return '<div class="'.$alignment.'">'
-		. '<ul class="pagination">'
+		. '<ul class="pagination'.$size.'">'
 			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
 			. $pagination
 			. $self->_pager_item($next_uri, $arg_ref->{next_text})
