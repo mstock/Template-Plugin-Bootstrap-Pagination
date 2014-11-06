@@ -1,4 +1,4 @@
 /.build
 .*.swp
-
+/t/manual/*.html
 /Template-Plugin-Bootstrap-Pagination-*
