@@ -2,6 +2,12 @@ Revision history for Template-Plugin-Bootstrap-Pagination
 
 {{$NEXT}}
 
+ - Add support for Bootstrap 3
+ - Add a 'version' parameter to set the Bootstrap version HTML code should be
+   generated for
+ - Add 'size' parameter to affect the size of the pagination component (which
+   is supported in newer Bootstrap versions)
+
 0.001002  2014-04-06 15:19:50 Europe/Zurich
 
  - Improve performance of pagination()-method in situations with many pages
