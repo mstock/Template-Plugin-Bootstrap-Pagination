@@ -2,6 +2,8 @@ Revision history for Template-Plugin-Bootstrap-Pagination
 
 {{$NEXT}}
 
+0.002000  2014-11-07 18:32:26 Europe/Zurich
+
  - Add support for Bootstrap 3
  - Add a 'version' parameter to set the Bootstrap version HTML code should be
    generated for
