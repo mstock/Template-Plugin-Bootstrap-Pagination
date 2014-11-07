@@ -380,7 +380,11 @@ sub _throw {
 
 =item *
 
-L<http://twitter.github.com/bootstrap/> - The bootstrap framework
+L<http://getbootstrap.com/> - The Bootstrap framework, latest version
+
+=item *
+
+L<http://twitter.github.com/bootstrap/> - The Bootstrap framework, version 2.3.2
 
 =item *
 
