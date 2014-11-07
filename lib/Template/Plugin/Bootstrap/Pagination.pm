@@ -1,6 +1,6 @@
 package Template::Plugin::Bootstrap::Pagination;
 {
-  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.001002';
+  $Template::Plugin::Bootstrap::Pagination::VERSION = '0.002000';
 }
 use parent qw(Template::Plugin);
 
@@ -33,6 +33,7 @@ sub new {
 		siblings  => 3,
 		offset    => 0,
 		factor    => 1,
+		version   => 2,
 		%{$arg_ref},
 	};
 
@@ -90,12 +91,47 @@ sub pagination {
 		}
 	}
 
+	my $version = $arg_ref->{version} || 2;
+	if ($version eq '2') {
+		return $self->_pagination_2($pagination, $arg_ref);
+	} elsif ($version eq '3') {
+		return $self->_pagination_3($pagination, $arg_ref);
+	} else {
+		croak('Bootstrap version ' . $version . ' not (yet) supported');
+	}
+}
+
+sub _pagination_2 {
+	my ($self, $pagination, $arg_ref) = @_;
+
 	my $alignment = $arg_ref->{centered}
 		? ' pagination-centered'
 		: ($arg_ref->{right} ? ' pagination-right' : '');
+	my $size = defined $arg_ref->{size} ? ' pagination-'.$arg_ref->{size} : '';
 	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
-	return '<div class="pagination'.$alignment.'">'
+	return '<div class="pagination'.$alignment.$size.'">'
 		. '<ul>'
+			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
+			. $pagination
+			. $self->_pager_item($next_uri, $arg_ref->{next_text})
+		. '</ul>'
+	. '</div>';
+}
+
+sub _pagination_3 {
+	my ($self, $pagination, $arg_ref) = @_;
+
+	my $alignment = $arg_ref->{centered}
+		? 'text-center'
+		: ($arg_ref->{right} ? 'text-right' : 'text-left');
+	my $size = defined $arg_ref->{size} ? ({
+		'mini'  => ' pagination-sm',
+		'small' => ' pagination-sm',
+		'large' => ' pagination-lg',
+	}->{$arg_ref->{size}} || '') : '';
+	my ($prev_uri, $next_uri) = $self->_prev_next_uri($arg_ref);
+	return '<div class="'.$alignment.'">'
+		. '<ul class="pagination'.$size.'">'
 			. $self->_pager_item($prev_uri, $arg_ref->{prev_text})
 			. $pagination
 			. $self->_pager_item($next_uri, $arg_ref->{next_text})
@@ -194,7 +230,7 @@ Template::Plugin::Bootstrap::Pagination - Produce HTML suitable for the Bootstra
 
 =head1 VERSION
 
-version 0.001002
+version 0.002000
 
 =head1 SYNOPSIS
 
@@ -203,12 +239,12 @@ version 0.001002
 
 	my $pagination_template_string = <<"EOTEMPLATE";
 	[%- USE Bootstrap.Pagination -%]
-	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri) -%]
+	[%- Bootstrap.Pagination.pagination(pager = pager, uri = uri, version = 2) -%]
 	EOTEMPLATE
 
 	my $pager_template_string = <<"EOTEMPLATE";
 	[%- USE Bootstrap.Pagination -%]
-	[%- Bootstrap.Pagination.pager(pager = pager, uri = uri) -%]
+	[%- Bootstrap.Pagination.pager(pager = pager, uri = uri, version = 3) -%]
 	EOTEMPLATE
 
 	my $pager = Data::Page->new(42, 10, 2);
@@ -251,6 +287,12 @@ values, and can be overridden when calling the plugin's methods.
 A reference to the L<Template::Context|Template::Context> which is loading the
 plugin. This is the positional parameter.
 
+=item version
+
+Bootstrap version the HTML code should be generated for. Defaults to C<2> for
+now, currently supported are the major versions C<2> and C<3> (although I have
+not tested many minor releases, so maybe this is not entirely correct).
+
 =item uri
 
 Template for the URI to use in links. Any occurrence of C<__PAGE__> in the URI
@@ -284,6 +326,13 @@ be the page size). Defaults to C<1>.
 
 Number of links to display to the left and the right of the current page.
 Defaults to C<3>. Only used in L<"pagination">.
+
+=item size
+
+Size of the pagination component. Newer versions (starting at around 2.2.0)
+support sizing of the pager. Supports C<large>, C<small> and C<mini> (C<mini>
+only in Bootstrap before 3.0.0 - will get mapped to C<small> if version is set
+to C<3>).
 
 =item centered
 
@@ -343,7 +392,11 @@ The HTML code.
 
 =item *
 
-L<http://twitter.github.com/bootstrap/> - The bootstrap framework
+L<http://getbootstrap.com/> - The Bootstrap framework, latest version
+
+=item *
+
+L<http://twitter.github.com/bootstrap/> - The Bootstrap framework, version 2.3.2
 
 =item *
 

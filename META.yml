@@ -34,4 +34,4 @@ requires:
   warnings: 0
 resources:
   repository: git://github.com/mstock/Template-Plugin-Bootstrap-Pagination.git
-version: 0.001002
+version: 0.002000

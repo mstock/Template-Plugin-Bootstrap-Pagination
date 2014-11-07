@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 0.94 tests => 9;
+use Test::More 0.94 tests => 10;
 use Test::Exception;
 use Template;
 use Template::Plugin::Bootstrap::Pagination;
@@ -45,8 +45,8 @@ EOEXPECTED
 };
 
 
-subtest 'pagination() test' => sub {
-	plan tests => 3;
+subtest 'pagination() for Bootstrap 2 test' => sub {
+	plan tests => 4;
 
 	my $plugin = Template::Plugin::Bootstrap::Pagination->new(undef, {
 		pager => Data::Page->new(12, 10, 2),
@@ -97,6 +97,93 @@ EOEXPECTED
 	is($plugin->pagination({
 		pager => Data::Page->new(2, 10, 2),
 		right => 1,
+	}), $expected, 'output ok');
+
+	# Size
+	$expected = compress_expected(<<EOEXPECTED
+<div class="pagination pagination-small">
+	<ul>
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager => Data::Page->new(2, 10, 2),
+		size  => 'small',
+	}), $expected, 'output ok');
+};
+
+
+subtest 'pagination() for Bootstrap 3 test' => sub {
+	plan tests => 4;
+
+	my $plugin = Template::Plugin::Bootstrap::Pagination->new(undef, {
+		pager => Data::Page->new(12, 10, 2),
+		uri   => 'http://www.example.com/blog/__PAGE__.html',
+		prev_text => 'Previous',
+		next_text => 'Next',
+		version => 3,
+	});
+
+	# Basic case
+	my $expected = compress_expected(<<EOEXPECTED
+<div class="text-left">
+	<ul class="pagination">
+		<li><a href="http://www.example.com/blog/1.html">Previous</a></li>
+		<li><a href="http://www.example.com/blog/1.html">1</a></li>
+		<li class="active"><span>2</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination(), $expected, 'output ok');
+
+	# Center pagination
+	$expected = compress_expected(<<EOEXPECTED
+<div class="text-center">
+	<ul class="pagination">
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager    => Data::Page->new(2, 10, 2),
+		centered => 1,
+	}), $expected, 'output ok');
+
+	# Right align pagination
+	$expected = compress_expected(<<EOEXPECTED
+<div class="text-right">
+	<ul class="pagination">
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager => Data::Page->new(2, 10, 2),
+		right => 1,
+	}), $expected, 'output ok');
+
+	# Size
+	$expected = compress_expected(<<EOEXPECTED
+<div class="text-left">
+	<ul class="pagination pagination-sm">
+		<li class="disabled"><span>Previous</span></li>
+		<li class="disabled"><span>Next</span></li>
+	</ul>
+</div>
+EOEXPECTED
+	);
+	is($plugin->pagination({
+		pager => Data::Page->new(2, 10, 2),
+		size  => 'small',
 	}), $expected, 'output ok');
 };
 
