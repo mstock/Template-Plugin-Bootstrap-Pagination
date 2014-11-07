@@ -111,7 +111,8 @@ Defaults to C<3>. Only used in L<"pagination">.
 
 Size of the pagination component. Newer versions (starting at around 2.2.0)
 support sizing of the pager. Supports C<large>, C<small> and C<mini> (C<mini>
-only in Bootstrap before 3.0.0).
+only in Bootstrap before 3.0.0 - will get mapped to C<small> if version is set
+to C<3>).
 
 =item centered
 
@@ -263,6 +264,7 @@ sub _pagination_3 {
 		? 'text-center'
 		: ($arg_ref->{right} ? 'text-right' : 'text-left');
 	my $size = defined $arg_ref->{size} ? ({
+		'mini'  => ' pagination-sm',
 		'small' => ' pagination-sm',
 		'large' => ' pagination-lg',
 	}->{$arg_ref->{size}} || '') : '';
